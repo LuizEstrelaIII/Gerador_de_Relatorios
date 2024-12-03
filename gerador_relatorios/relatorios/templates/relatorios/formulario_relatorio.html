@@ -1,0 +1,111 @@
+<!-- gerador_relatorios/relatorios/templates/relatorios/formulario_relatorio.html -->
+
+{% load custom_filters %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerar Relatório</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        img {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulário para Gerar Relatório</h1>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <p>{{ form.nome_relatorio.label_tag }} {{ form.nome_relatorio }}</p>
+        <p>{{ form.data_inicio.label_tag }} {{ form.data_inicio }}</p>
+        <p>{{ form.data_fim.label_tag }} {{ form.data_fim }}</p>
+        <p>{{ form.tipo_relatorio.label_tag }} {{ form.tipo_relatorio }}</p>
+    
+        <h3>Informações sobre vendas:</h3>
+        <p>{{ form.produto.label_tag }} {{ form.produto }}</p>
+        <p>{{ form.preco.label_tag }} {{ form.preco }}</p>
+        <p>{{ form.quantidade.label_tag }} {{ form.quantidade }}</p>
+    
+        <button type="submit">Gerar Relatório</button>
+    </form>
+    
+    
+
+    {% if nome_relatorio %}
+        <h2>Relatório Gerado</h2>
+        <table>
+            <tr>
+                <th>Nome do Relatório</th>
+                <td>{{ nome_relatorio }}</td>
+            </tr>
+            <tr>
+                <th>Data de Início</th>
+                <td>{{ data_inicio }}</td>
+            </tr>
+            <tr>
+                <th>Data de Fim</th>
+                <td>{{ data_fim }}</td>
+            </tr>
+            <tr>
+                <th>Tipo de Relatório</th>
+                <td>{{ tipo_relatorio }}</td>
+            </tr>
+        </table>
+
+        <h3>Detalhes das Vendas</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Preço</th>
+                    <th>Quantidade</th>
+                    <th>Total (R$)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venda in vendas %}
+                    <tr>
+                        <td>{{ venda.produto }}</td>
+                        <td>{{ venda.preco|floatformat:2 }}</td>
+                        <td>{{ venda.quantidade }}</td>
+                        <td>{{ venda.total|floatformat:2 }}</td> <!-- Exibe o total calculado -->
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {% if grafico %}
+            <h3>Gráfico de Vendas por Produto</h3>
+            <img src="data:image/png;base64,{{ grafico }}" alt="Gráfico de Vendas">
+        {% endif %}
+    {% endif %}
+</body>
+</html>
